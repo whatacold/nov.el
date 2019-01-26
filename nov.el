@@ -337,9 +337,9 @@ Each alist item consists of the identifier and full path."
                             (esxml-node-children node))))
     (cond
      ((eq tag 'navMap)
-      (insert "<ol>\n")
+      (insert "<ul>\n")
       (mapc (lambda (node) (nov--walk-ncx-node node (1+ depth))) children)
-      (insert "</ol>\n"))
+      (insert "</ul>\n"))
      ((eq tag 'navPoint)
       (let* ((label-node (esxml-query "navLabel>text" node))
              (content-node (esxml-query "content" node))
@@ -350,10 +350,10 @@ Each alist item consists of the identifier and full path."
         (let ((link (format "<a href=\"%s\">%s</a>" href (or label href))))
           (if children
               (progn
-                (insert (format "<li>\n%s\n<ol>\n" link))
+                (insert (format "<li>\n%s\n<ul>\n" link))
                 (mapc (lambda (node) (nov--walk-ncx-node node (1+ depth)))
                       children)
-                (insert (format "</ol>\n</li>\n")))
+                (insert (format "</ul>\n</li>\n")))
             (insert (format "<li>\n%s\n</li>\n" link)))))))))
 
 (defun nov-ncx-to-html (path)
@@ -500,6 +500,9 @@ the HTML is rendered with `nov-render-html-function'."
                          image-type-file-name-regexps))
          ;; NOTE: allows resolving image references correctly
          (default-directory (file-name-directory path))
+         (shr-bullet (if (eq id nov-toc-id)
+                         " "
+                       shr-bullet))
          buffer-read-only)
     (erase-buffer)
 
